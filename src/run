@@ -1,0 +1,7 @@
+#!/bin/bash
+
+if [ -n $1 ]; then
+	../build/kilo $1
+else
+	../build/kilo
+fi 
