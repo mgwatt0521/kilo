@@ -9,9 +9,21 @@
 char *C_HL_extensions[] = {".c", ".h", ".cpp", NULL};
 char *C_HL_keywords[] = {
     "switch", "if", "while", "for", "break", "continue", "return", "else",
-    "struct", "union", "typedef", "static", "enum", "class", "case",
+    "struct", "union", "typedef", "static", "enum", "class", "case", "default",
 
     "int|", "long|", "double|", "float|", "char|", "unsigned|", "void|",
+    NULL
+};
+
+char *JAVA_HL_extensions[] = {".java", NULL};
+char *JAVA_HL_KEYWORDS[] = {
+    "switch", "if", "while", "for", "break", "continue", "return", "else",
+    "static", "enum", "class", "case", "throws", "import", "synchronized",
+    "public", "protected", "private", "package", "new", "interface", "instanceof",
+    "implements", "try", "catch", "finally", "extends", "do", "default",
+
+    "int|", "long|", "double|", "float|", "char|", "unsigned|", "void|", "short|",
+    "byte|",
     NULL
 };
 
@@ -22,6 +34,13 @@ struct editor_syntax HLDB[] = {
         C_HL_keywords,
         "//", "/*", "*/",
         HL_HIGHLIGHT_NUMBERS | HL_HIGHLIGHT_STRINGS | HL_HAS_MACROS
+    },
+    {
+        "java",
+        JAVA_HL_extensions,
+        JAVA_HL_KEYWORDS,
+        "//", "/*", "*/",
+        HL_HIGHLIGHT_NUMBERS | HL_HIGHLIGHT_STRINGS
     },
 };
 
