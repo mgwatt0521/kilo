@@ -3,8 +3,9 @@
 
 #include "erow.h"
 
-#define HL_HIGHLIGHT_NUMBERS (1<<0)
-#define HL_HIGHLIGHT_STRINGS (1<<1)
+#define HL_HIGHLIGHT_NUMBERS    (1<<0)
+#define HL_HIGHLIGHT_STRINGS    (1<<1)
+#define HL_HAS_MACROS           (1<<2)
 
 extern size_t hldb_entries;
 
@@ -23,6 +24,8 @@ enum editor_highlight {
     HL_COMMENT,
     HL_MLCOMMENT,
     HL_KEYWORD1,
+    HL_MACRO,
+    HL_MACRO_ID,
     HL_KEYWORD2,
     HL_STRING,
     HL_NUMBER,

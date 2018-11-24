@@ -21,7 +21,7 @@ struct editor_syntax HLDB[] = {
         C_HL_extensions,
         C_HL_keywords,
         "//", "/*", "*/",
-        HL_HIGHLIGHT_NUMBERS | HL_HIGHLIGHT_STRINGS
+        HL_HIGHLIGHT_NUMBERS | HL_HIGHLIGHT_STRINGS | HL_HAS_MACROS
     },
 };
 
@@ -49,6 +49,9 @@ void editor_update_syntax(erow *row)
     int prev_sep = 1;
     int in_string = 0;
     int in_comment = (row->idx > 0 && E.row[row->idx - 1].hl_open_comment);
+    int in_macro = 0;
+    int in_macro_id = 0;
+    int in_macro_def = 0;
 
     int i = 0;
     while (i < row->rsize) {
@@ -116,6 +119,50 @@ void editor_update_syntax(erow *row)
             }
         }
 
+        if (E.syntax->flags & HL_HAS_MACROS) {
+            if (in_macro) {
+                row->hl[i] = in_macro_id ? HL_MACRO_ID : HL_MACRO;
+
+                if (in_macro_id) {
+                    row->hl[i] = HL_MACRO_ID;
+
+                    if (in_macro_def) {
+                        row->hl[i] = HL_NORMAL;
+                        in_macro = 0;
+                        in_macro_id = 0;
+                        in_macro_def = 0;
+                    }
+
+                    if (c == ' ') {
+                        in_macro_def = c;
+                        row->hl[i] = HL_NORMAL;
+                    }
+                    i++;
+                    continue;
+                } else {
+                    if (c == ' ') {
+                        in_macro_id = c;
+                        row->hl[i] = HL_MACRO_ID;
+                        i++;
+                        continue;
+                    }
+                }
+
+                if (c == ' ') {
+                    in_macro_id = c;
+                }
+                i++;
+                continue;
+            } else {
+                if (c == '#') {
+                    in_macro = c;
+                    row->hl[i] = HL_MACRO;
+                    i++;
+                    continue;
+                }
+            }
+        }
+
         if (prev_sep) {
             int j;
             for (j = 0; keywords[j]; j++) {
@@ -154,12 +201,14 @@ int editor_syntax_to_color(int hl)
         case HL_MLCOMMENT:
             return 36;
         case HL_KEYWORD1:
+        case HL_MACRO:
             return 33;
         case HL_KEYWORD2:
             return 32;
         case HL_STRING:
             return 35;
         case HL_NUMBER:
+        case HL_MACRO_ID:
             return 31;
         case HL_MATCH:
             return 34;
